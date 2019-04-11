@@ -1,9 +1,11 @@
+// tslint:disable-next-line: match-default-export-name
 import axios, { AxiosResponse } from 'axios';
 import { BASE_URL } from './utils/config';
 import { TaxcloudTypes } from './utils/types';
 // import { TaxcloudEnums } from './utils/enums';
 
-export default class Taxcloud {
+// tslint:disable-next-line: completed-docs
+export class Taxcloud {
   public static BASE_URL: string = BASE_URL;
   public static VERSION: string = 'v2';
   private readonly axiosConfig: TaxcloudTypes.AxiosConfig;
@@ -33,6 +35,12 @@ export default class Taxcloud {
   public createLookup(cart: TaxcloudTypes.Cart): Promise<TaxcloudTypes.Lookup> {
     const instance = axios.create(this.axiosConfig);
 
+    if (cart === undefined) {
+      return Promise.reject(
+        new Error('Create lookup must contain a cart object'),
+      );
+    }
+
     return instance.post(`/lookups`, cart).then((response: AxiosResponse) => {
       return response.data;
     });
@@ -48,7 +56,7 @@ export default class Taxcloud {
 
     if (params.orderId === undefined) {
       return Promise.reject(
-        new Error('Must include authorized array with valid orderId'),
+        new Error('Must include params object with valid orderId'),
       );
     }
 
@@ -59,9 +67,8 @@ export default class Taxcloud {
 
     return instance
       .post(`lookup/${lookupId}/authorized`, params)
-      .then((response: AxiosResponse) => {
-        return response.data;
-      });
+// tslint:disable-next-line: no-unsafe-any
+      .then((response: AxiosResponse): TaxcloudTypes.Lookup => response.data);
   }
 
   public captured(
@@ -85,10 +92,12 @@ export default class Taxcloud {
   }
 
   public authorizedWithCapture(
-    orderId: string,
-    params: TaxcloudTypes.Authorized & TaxcloudTypes.Captured = { orderId: undefined },
+    lookupId: string,
+    params: TaxcloudTypes.Authorized & TaxcloudTypes.Captured = {
+      orderId: undefined,
+    },
   ): Promise<TaxcloudTypes.Lookup> {
-    if (orderId === undefined) {
+    if (lookupId === undefined) {
       return Promise.reject(new Error('Must include valid order id'));
     }
 
@@ -100,13 +109,31 @@ export default class Taxcloud {
 
     const instance = axios.create({
       ...this.axiosConfig,
-      params: { return: 'representation' }
+      params: { return: 'representation' },
     });
 
     return instance
-      .post(`lookups/${orderId}/authorizedWithCapture`, params)
-      .then((response: AxiosResponse) => {
-        return response.data;
-      });
+      .post(`lookups/${lookupId}/authorizedWithCapture`, params)
+// tslint:disable-next-line: no-unsafe-any
+      .then((response: AxiosResponse) => response.data);
+  }
+
+  public returnedEntireOrder(
+    orderId: string,
+    params: TaxcloudTypes.Returned = {},
+  ): Promise<TaxcloudTypes.Lookup> {
+    if (orderId === undefined) {
+      return Promise.reject(new Error('Must include valid order id'));
+    }
+
+    const instance = axios.create({
+      ...this.axiosConfig,
+      params: { return: 'representation' },
+    });
+
+    return instance
+      .post(`lookups/${orderId}/returned`, params)
+// tslint:disable-next-line: no-unsafe-any
+      .then((response: AxiosResponse) => response.data);
   }
 }

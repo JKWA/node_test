@@ -52,6 +52,7 @@ export namespace TaxcloudTypes {
   interface LookupAttributes {
     authorized: string;
     captured: string;
+    returned: string;
     currencyType: string;
     deliveredBySeller: boolean;
     totalSales: number;
@@ -85,4 +86,7 @@ export namespace TaxcloudTypes {
     captured?: string;
   }
 
+  export interface Returned {
+    returned?: string;
+  }
 }

@@ -1,9 +1,9 @@
-import Taxcloud from '../src/main';
+import { Taxcloud } from '../src/main';
 import { API_KEY, LOGIN_ID } from '../src/utils/config';
 import { TaxcloudEnums } from '../src/utils/enums';
 import { TaxcloudTypes } from '../src/utils/types';
 
-describe('createLookup method success', () => {
+describe('authorized lookup method success', () => {
   let results: TaxcloudTypes.Lookup;
 
   beforeAll(async () => {
@@ -34,9 +34,19 @@ describe('createLookup method success', () => {
   it('creates new order with captured set as null', () => {
     expect(results.data.attributes.captured).toBeNull();
   });
+
+  it('creates new order with returned set as null', () => {
+    expect(results.data.attributes.returned).toBeNull();
+  });
+
+  it('creates new order with first item of type item_detail', () => {
+    expect(results.data.attributes.items[0].type).toBe(
+      TaxcloudEnums.ReturnType.ITEM_DETAIL,
+    );
+  });
 });
 
-describe('createLookup method failure', () => {
+describe('authorized lookup method failure', () => {
   let results: TaxcloudTypes.Lookup;
 
   beforeAll(async () => {
