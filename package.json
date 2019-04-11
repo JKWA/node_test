@@ -40,5 +40,4 @@
     "tslib": "~1.9.3"
   },
   "typings": "./index.d.ts"
-
 }
