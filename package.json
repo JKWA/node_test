@@ -35,7 +35,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@types/dotenv": "^6.1.1",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "dotenv": "^7.0.0",
     "tslib": "~1.9.3"
   },
